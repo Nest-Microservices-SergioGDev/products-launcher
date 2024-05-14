@@ -33,6 +33,7 @@ Si se hace al revés, se perderán las referencias de los sub-módulos en el rep
 
 1. Clonar el repositorio
 2. Crear un *.env* basado en *.env.template*
-3. Ejecutar el comando `docker compose up --build`
+3. Ejecutar el comando `git submodule update --init --recursive` para reconstruir los submódulos
+4. Ejecutar el comando `docker compose up --build`
 
 

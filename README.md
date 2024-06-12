@@ -35,7 +35,7 @@ git submodule update --remote
 
 1. Entrar en el proyecto:
 ```
-cd __submodule__
+cd <submodule>
 ```
 2. Stash a los cambios sin commitear:
 ```

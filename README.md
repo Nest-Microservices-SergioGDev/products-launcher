@@ -31,6 +31,39 @@ git submodule update --init --recursive
 git submodule update --remote
 ```
 
+### Pasos para commitear cambios al submódulo desde el proyecto principal
+
+1. Entrar en el proyecto:
+```
+cd __submodule__
+```
+2. Stash a los cambios sin commitear:
+```
+git stash
+```
+3. Obtenemos la rama a la que queremos commitear (en nuestro caso main) y nos cambiamos a esa rama:
+```
+git pull origin main
+git checkout main
+```
+4. Obtenemos los cambios que hemos stasheado:
+```
+git stash pop
+```
+5. Commiteamos y pusheamos nuestros cambios a nuestra rama:
+```
+git add .
+git commit -m "<mensaje del commit>"
+git push <origin> <main>
+```
+6. Volvemos a la rama del launcher y commiteamos los cambios del submódulo
+```
+cd ..
+git add .
+git commit -m "feat: added changes to submodule"
+git push
+```
+
 
 ## Importante
 Si se trabaja en el repositorio que tiene los sub-módulos, **primero actualizar y hacer push** en el sub-módulo y **después** en el repositorio principal. 

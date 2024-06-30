@@ -1,0 +1,68 @@
+services:
+  nats-server:
+    image: nats:latest
+
+  # Client Gateway
+  client-gateway:
+    build:
+      context: ./client-gateway
+      dockerfile: Dockerfile.prod
+    image: europe-southwest1-docker.pkg.dev/tienda-microservices-427314/image-registry/client-gateway
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+
+  # Products Microservice
+  products-ms:
+    build: 
+      context: ./products-ms
+      dockerfile: Dockerfile.prod
+    image: europe-southwest1-docker.pkg.dev/tienda-microservices-427314/image-registry/products-ms
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=file:./dev.db
+
+  # Orders Microservice
+  orders-ms:
+    build: 
+      context: ./orders-ms
+      dockerfile: Dockerfile.prod
+      args:
+        - ORDERS_DB_URL=${ORDERS_DB_URL}
+    image: europe-southwest1-docker.pkg.dev/tienda-microservices-427314/image-registry/orders-ms
+    environment:
+      - PORT=3000
+      - DATABASE_URL=${ORDERS_DB_URL}
+      - NATS_SERVERS=nats://nats-server:4222
+
+  # Payments Microservice
+  payments-ms:
+    build: 
+      context: ./payments-ms
+      dockerfile: Dockerfile.prod
+    image: europe-southwest1-docker.pkg.dev/tienda-microservices-427314/image-registry/payments-ms
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - PAYMENTS_MS_PORT=${PAYMENTS_MS_PORT}
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+  
+  # Auth Microservice
+  auth-ms:
+    build: 
+      context: ./auth-ms
+      dockerfile: Dockerfile.prod
+    image: europe-southwest1-docker.pkg.dev/tienda-microservices-427314/image-registry/auth-ms
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}

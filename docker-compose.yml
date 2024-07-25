@@ -60,7 +60,6 @@ services:
 
   # Payments Microservice
   payments-ms:
-    container_name: payments-ms
     build: ./payments-ms
     volumes:
       - ./payments-ms/src:/usr/src/app/src
